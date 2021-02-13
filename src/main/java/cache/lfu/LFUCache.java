@@ -8,11 +8,21 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class LFUCache<K, V> extends MyCache<K, V> {
-    private final LinkedHashMap<K, Node> cache;
+    private final LinkedHashMap<K, Node> cache = new LinkedHashMap<>(maxCapacity, 0.75f);
 
-    public LFUCache(int maxCapacity) {
-        super(maxCapacity);
-        this.cache = new LinkedHashMap<>(maxCapacity, 0.75f);
+    private LFUCache(Builder<K, V> builder) {
+        super(builder);
+    }
+
+    public static class Builder<K, V> extends MyCache.Builder<K, V> {
+        public Builder(int maxCapacity) {
+            super(maxCapacity);
+        }
+
+        @Override
+        public MyCache<K, V> build() {
+            return new LFUCache<>(this);
+        }
     }
 
     @Override

@@ -14,8 +14,19 @@ public class LRUCache<K, V> extends MyCache<K, V> {
         }
     };
 
-    public LRUCache(int maxCapacity) {
-        super(maxCapacity);
+    private LRUCache(Builder<K, V> builder) {
+        super(builder);
+    }
+
+    public static class Builder<K, V> extends MyCache.Builder<K, V> {
+        public Builder(int maxCapacity) {
+            super(maxCapacity);
+        }
+
+        @Override
+        public MyCache<K, V> build() {
+            return new LRUCache<>(this);
+        }
     }
 
     @Override
