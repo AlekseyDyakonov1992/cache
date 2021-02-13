@@ -8,22 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class LFUCache<K, V> extends MyCache<K, V> {
-    private final LinkedHashMap<K, Node> cache = new LinkedHashMap<>(maxCapacity, 0.75f);
-
-    private LFUCache(Builder<K, V> builder) {
-        super(builder);
-    }
-
-    public static class Builder<K, V> extends MyCache.Builder<K, V> {
-        public Builder(int maxCapacity) {
-            super(maxCapacity);
-        }
-
-        @Override
-        public MyCache<K, V> build() {
-            return new LFUCache<>(this);
-        }
-    }
+    private final LinkedHashMap<K, Node> cache = new LinkedHashMap<>(getMaxCapacity(), 0.75f);
 
     @Override
     public Optional<V> get(K key) {
@@ -41,7 +26,7 @@ public class LFUCache<K, V> extends MyCache<K, V> {
     }
 
     private void doEvictionIfNeeded(K putKey) {
-        if (cache.size() < maxCapacity) {
+        if (cache.size() < getMaxCapacity()) {
             return;
         }
         long minFrequency = Long.MAX_VALUE;

@@ -1,5 +1,5 @@
+import cache.CacheBuilder;
 import cache.lfu.LFUCache;
-import cache.MyCache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class LFUCacheTest {
     @Test
     public void checkEvictionStrategyByCapacity() {
-        MyCache<String, Integer> cache = new LFUCache.Builder<String, Integer>(10).build();
+        LFUCache<String, Integer> cache = CacheBuilder.build(LFUCache.class).with(lfu -> lfu.setMaxCapacity(10)).get();
         IntStream.range(0, 20).forEach(i -> cache.put(String.valueOf(i), i));
 
         Assertions.assertTrue(IntStream.range(9, 19).noneMatch(i -> cache.get(String.valueOf(i)).isPresent()));
@@ -17,7 +17,7 @@ public class LFUCacheTest {
 
     @Test
     public void checkEvictionStrategyByLatestElement() {
-        MyCache<String, Integer> cache = new LFUCache.Builder<String, Integer>(3).build();
+        LFUCache<String, Integer> cache = CacheBuilder.build(LFUCache.class).with(lfu -> lfu.setMaxCapacity(3)).get();
         IntStream.range(0, 3).forEach(i -> cache.put(String.valueOf(i), i));
 
         Assertions.assertEquals(2, cache.get("2").get());
@@ -27,7 +27,7 @@ public class LFUCacheTest {
 
     @Test
     public void checkEvictionStrategyByFirstElement() {
-        MyCache<String, Integer> cache = new LFUCache.Builder<String, Integer>(3).build();
+        LFUCache<String, Integer> cache = CacheBuilder.build(LFUCache.class).with(lfu -> lfu.setMaxCapacity(3)).get();
         IntStream.range(0, 3).forEach(i -> cache.put(String.valueOf(i), i));
 
         Assertions.assertEquals(0, cache.get("0").get());
@@ -37,7 +37,7 @@ public class LFUCacheTest {
 
     @Test
     public void checkEvictionStrategyWithOverwrite() {
-        MyCache<String, Integer> cache = new LFUCache.Builder<String, Integer>(3).build();
+        LFUCache<String, Integer> cache = CacheBuilder.build(LFUCache.class).with(lfu -> lfu.setMaxCapacity(3)).get();
         IntStream.range(0, 3).forEach(i -> cache.put(String.valueOf(i), i));
         cache.put("0", 4);
 

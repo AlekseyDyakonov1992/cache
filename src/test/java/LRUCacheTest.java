@@ -1,5 +1,5 @@
+import cache.CacheBuilder;
 import cache.lru.LRUCache;
-import cache.MyCache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class LRUCacheTest {
     @Test
     public void checkEvictionStrategyByCapacity() {
-        MyCache<String, Integer> cache = new LRUCache.Builder<String, Integer>(10).build();
+        LRUCache<String, Integer> cache = CacheBuilder.build(LRUCache.class).with(lfu -> lfu.setMaxCapacity(10)).get();
         IntStream.range(0, 20).forEach(i -> cache.put(String.valueOf(i), i));
 
         Assertions.assertTrue(IntStream.range(0, 10).noneMatch(i -> cache.get(String.valueOf(i)).isPresent()));
@@ -17,7 +17,7 @@ public class LRUCacheTest {
 
     @Test
     public void checkEvictionStrategyByLatestElement() {
-        MyCache<String, Integer> cache = new LRUCache.Builder<String, Integer>(3).build();
+        LRUCache<String, Integer> cache = CacheBuilder.build(LRUCache.class).with(lfu -> lfu.setMaxCapacity(3)).get();
         IntStream.range(0, 3).forEach(i -> cache.put(String.valueOf(i), i));
 
         Assertions.assertEquals(2, cache.get("2").get());
@@ -27,7 +27,7 @@ public class LRUCacheTest {
 
     @Test
     public void checkEvictionStrategyByFirstElement() {
-        MyCache<String, Integer> cache = new LRUCache.Builder<String, Integer>(3).build();
+        LRUCache<String, Integer> cache = CacheBuilder.build(LRUCache.class).with(lfu -> lfu.setMaxCapacity(3)).get();
         IntStream.range(0, 3).forEach(i -> cache.put(String.valueOf(i), i));
 
         Assertions.assertEquals(0, cache.get("0").get());
